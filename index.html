@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ohm's Law Calculator — Kennenth Toolbox</title>
+  <meta name="description" content="Calculate voltage, current, resistance, and electrical power using Ohm's Law.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ohm's Law Calculator — Kennenth Toolbox">
+  <meta property="og:description" content="Calculate voltage, current, resistance, and electrical power using Ohm's Law.">
+  <meta property="og:url" content="https://kennenthhartono.github.io/ohms-law-calculator/">
+  <meta name="theme-color" content="#2C1A14">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap">
+      <p class="tag">Electrical utility // OL-01</p>
+      <h1>OHM'S LAW CALCULATOR</h1>
+      <p class="sub">Calculate voltage, current, resistance, and power.</p>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <section class="panel" aria-labelledby="calc-title">
+      <h2 id="calc-title">What do you want to calculate?</h2>
+      <form id="calc-form" novalidate autocomplete="off">
+        <fieldset class="modes">
+          <legend class="sr-only">Calculation mode</legend>
+          <input type="radio" name="mode" id="mode-voltage" value="voltage" checked><label for="mode-voltage">Voltage</label>
+          <input type="radio" name="mode" id="mode-current" value="current"><label for="mode-current">Current</label>
+          <input type="radio" name="mode" id="mode-resistance" value="resistance"><label for="mode-resistance">Resistance</label>
+          <input type="radio" name="mode" id="mode-power" value="power"><label for="mode-power">Power</label>
+        </fieldset>
+
+        <h3>Inputs</h3>
+        <p id="mode-hint" class="hint"></p>
+
+        <div class="field">
+          <label for="in-voltage">Voltage</label>
+          <div class="row"><input type="text" id="in-voltage" inputmode="decimal" aria-describedby="err-voltage">
+            <select id="unit-voltage" aria-label="Voltage unit"></select></div>
+          <p class="error" id="err-voltage"></p>
+        </div>
+        <div class="field">
+          <label for="in-current">Current</label>
+          <div class="row"><input type="text" id="in-current" inputmode="decimal" aria-describedby="err-current">
+            <select id="unit-current" aria-label="Current unit"></select></div>
+          <p class="error" id="err-current"></p>
+        </div>
+        <div class="field">
+          <label for="in-resistance">Resistance</label>
+          <div class="row"><input type="text" id="in-resistance" inputmode="decimal" aria-describedby="err-resistance">
+            <select id="unit-resistance" aria-label="Resistance unit"></select></div>
+          <p class="error" id="err-resistance"></p>
+        </div>
+        <p class="error" id="form-error" role="alert"></p>
+
+        <div class="actions">
+          <button type="submit" class="btn primary">Calculate</button>
+          <button type="button" class="btn" id="reset-btn">Reset</button>
+        </div>
+      </form>
+
+      <h3>Quick examples</h3>
+      <div class="presets">
+        <button type="button" class="chip" data-preset="led">LED circuit<small>5 V, 220 Ω</small></button>
+        <button type="button" class="chip" data-preset="esp32">ESP32<small>3.3 V, 80 mA</small></button>
+        <button type="button" class="chip" data-preset="motor">DC motor<small>12 V, 2 A</small></button>
+        <button type="button" class="chip" data-preset="resistor">Resistor<small>1 kΩ, 10 mA</small></button>
+      </div>
+    </section>
+
+    <section class="panel instrument is-empty" id="output" aria-labelledby="result-title">
+      <h2 id="result-title">Calculation result</h2>
+      <div aria-live="polite" aria-atomic="true">
+        <div class="readout">
+          <span class="readout-label" id="main-label">Voltage</span>
+          <output class="readout-value" id="main-value">—</output>
+        </div>
+        <dl class="stats">
+          <div><dt>Voltage</dt><dd id="stat-voltage">—</dd></div>
+          <div><dt>Current</dt><dd id="stat-current">—</dd></div>
+          <div><dt>Resistance</dt><dd id="stat-resistance">—</dd></div>
+          <div><dt>Power</dt><dd id="stat-power">—</dd></div>
+        </dl>
+        <h3>Formula used</h3>
+        <pre class="formula" id="formula-lines"></pre>
+        <p class="empty-note">Pick a mode, enter two values, and press Calculate.</p>
+      </div>
+
+      <svg class="circuit" viewBox="0 0 400 230" role="img" aria-label="Simple circuit with a voltage source and a resistor, labelled with the calculated values">
+        <g fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M40 170V50h90l10-14 20 28 20-28 20 28 20-28 20 28 10-14h90v120h-145"/>
+          <path d="M195 170H40"/>
+          <path d="M215 150v40M198 160v20" stroke-width="4"/>
+        </g>
+        <path d="M40 125l-6-9h12z" fill="#C25B3E"/>
+        <g class="c-text">
+          <text id="c-i" x="52" y="105">I = —</text>
+          <text id="c-r" x="200" y="22" text-anchor="middle">R = —</text>
+          <text id="c-v" x="206" y="212" text-anchor="middle">V = —</text>
+          <text id="c-p" x="225" y="142" text-anchor="middle" class="c-power">P = —</text>
+        </g>
+      </svg>
+
+      <div class="dissipation">
+        <h3>Power dissipation</h3>
+        <p><strong id="dissipation-value">Calculated: —</strong></p>
+        <p>Choose a component with a power rating comfortably above this value. For high-power or mains-connected systems, follow the applicable standards and consult a qualified engineer.</p>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn secondary" id="copy-btn" disabled>Copy result</button>
+        <span id="copy-status" class="status" role="status"></span>
+      </div>
+    </section>
+
+    <section class="panel wide" aria-labelledby="ref-title">
+      <h2 id="ref-title">Formula reference</h2>
+      <div class="ref-grid">
+        <div class="tri" aria-hidden="true">
+          <div class="frac"><span data-letter="P">P</span><span class="bar"></span><span><b>V</b> × <b>I</b></span></div>
+          <div class="frac"><span data-letter="V">V</span><span class="bar"></span><span><b data-letter="I">I</b> <b data-letter="R">R</b></span></div>
+        </div>
+        <div>
+          <h3>Ohm's law</h3>
+          <ul class="eqs">
+            <li data-eq="voltage">V = I × R</li>
+            <li data-eq="current">I = V / R</li>
+            <li data-eq="resistance">R = V / I</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Power</h3>
+          <ul class="eqs">
+            <li data-eq="power">P = V × I</li>
+            <li data-eq="power">P = I² × R</li>
+            <li data-eq="power">P = V² / R</li>
+          </ul>
+        </div>
+      </div>
+      <p>Voltage is the electrical potential difference, current is the flow of electric charge, and resistance opposes current flow.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <strong>OHM'S LAW CALCULATOR</strong>
+      <span>Electrical Utility // OL-01</span>
+      <span>Part of KENNENTH TOOLBOX</span>
+    </div>
+  </footer>
+
+  <script src="js/units.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
